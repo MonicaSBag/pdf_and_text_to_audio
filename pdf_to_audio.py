@@ -3,6 +3,7 @@ import pyttsx3  # PYTHON LIBRARY FOR TEXT TO SPEECH, IT DOESNT HAVE A WAY TO STO
 from tkinter import Tk, Label, Entry, Button, filedialog, LabelFrame, Text, END, StringVar, Radiobutton, LEFT, \
     messagebox
 from os import environ, remove
+import numpy as np
 
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
 import pygame  # LIBRARY FOR PLAY, PAUSE, AND RESUME THE AUDIO
@@ -27,15 +28,6 @@ def delete_audio():
         remove('pdf_temporal_audio.wav')
     except FileNotFoundError:
         pass
-
-
-def refresh_program():
-    global info
-    path_entry.delete(0, END)
-    num_entry1.delete(0, END)
-    num_entry2.delete(0, END)
-    info.grid_forget()
-    delete_audio()
 
 
 # GET PDF
@@ -95,8 +87,21 @@ def get_pdf():
         pass
 
 
+def refresh_program():
+    global info
+    path_entry.delete(0, END)
+    num_entry1.delete(0, END)
+    num_entry2.delete(0, END)
+    info.grid_forget()
+    delete_audio()
+
+
 def change_voice(value):
     engine.setProperty('voice', voices[value].id)
+
+
+def removes_space(string):
+    return np.char.replace(string, '\n', '')
 
 
 def read_pdf(value):
@@ -110,7 +115,8 @@ def read_pdf(value):
         pag = range(int(num_entry1.get()) - 1, int(num_entry2.get()))
         page_text = []
         for x in pag:
-            page_text.append(doc.pages[x].extract_text())
+            txt_pages = doc.pages[x].extract_text()
+            page_text.append(removes_space(txt_pages))
         engine.save_to_file(page_text, 'pdf_temporal_audio.wav')
         engine.runAndWait()
         pygame.init()
@@ -187,3 +193,4 @@ read_buton2.grid(column=2, row=8)
 window.mainloop()
 # QUIT THE PLAYER AND REMOVE THE WAV FROM THE FILE
 delete_audio()
+

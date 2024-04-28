@@ -11,6 +11,7 @@ BACKGROUND_COLOR = "#E1F7F5"
 doc = None
 num_entry1 = None
 num_entry2 = None
+info = None
 # SET THE VOICE ENGINE
 engine = pyttsx3.init()
 voices = engine.getProperty('voices')
@@ -29,9 +30,11 @@ def delete_audio():
 
 
 def refresh_program():
+    global info
     path_entry.delete(0, END)
     num_entry1.delete(0, END)
     num_entry2.delete(0, END)
+    info.grid_forget()
     delete_audio()
 
 
@@ -40,6 +43,7 @@ def get_pdf():
     global num_entry1
     global num_entry2
     global doc
+    global info
     try:
         # GET PDF
         pdf_path = filedialog.askopenfile().name
